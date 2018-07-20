@@ -11,9 +11,9 @@
   nx = 20
   ny = 20
   nz = 20
-  xmax = 100
-  ymax = 100
-  zmax = 100
+  xmax = 128
+  ymax = 128
+  zmax = 128
 []
 
 [Variables]
@@ -55,7 +55,7 @@
     y1 = 0
     z1 = 0
     radius = 8
-    int_width = 1
+    int_width = 3
     invalue = 1.0
     outvalue = -1.0
   [../]
@@ -276,7 +276,7 @@
 
   [./TimeStepper]
     type = IterationAdaptiveDT
-    dt = 0.0024
+    dt = 0.003
     growth_factor = 1.2
     cutback_factor = 0.8
   [../]
@@ -284,30 +284,12 @@
   end_time = 1500
 
   [./Adaptivity]
-    marker = errorfrac
-    [./Indicators]
-      [./error]
-        type = GradientJumpIndicator
-        variable = p
-        outputs = none
-      [../]
-    [../]
-    [./Markers]
-      [./errorfrac]
-        type = ErrorFractionMarker
-        refine = 0.75
-        coarsen = 0.02
-        indicator = error
-        outputs = none
-      [../]
-    [../]
-
     initial_adaptivity = 4
     max_h_level = 4
     refine_fraction = 0.95
-    coarsen_fraction = 0.15
+    coarsen_fraction = 0.10
     weight_names = 'p u'
-    weight_values = '0.9 0.1'
+    weight_values = '0.5 0.5'
 
   [../]
 []
