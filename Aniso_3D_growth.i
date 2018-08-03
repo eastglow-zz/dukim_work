@@ -8,12 +8,12 @@
 [Mesh]
   type = GeneratedMesh
   dim = 3
-  nx = 20
-  ny = 20
-  nz = 20
-  xmax = 128
-  ymax = 128
-  zmax = 128
+  nx = 10
+  ny = 10
+  nz = 10
+  xmax = 64
+  ymax = 64
+  zmax = 64
 []
 
 [Variables]
@@ -208,7 +208,7 @@
     f_name = Wsq_aniso
     material_property_names = 'W0 eps4'
     args = 'dpx dpy dpz'
-    function = 'if(sqrt(dpx^2 + dpy^2) > 1e-5, (W0*(1-3*eps4))^2 * (1 + (4*eps4/(1-3*eps4)) * (dpx^4 + dpy^4 + dpz^4)/(dpx^2 + dpy^2 + dpz^2)^2)^2, W0^2)'
+    function = 'if(sqrt(dpx^2 + dpy^2 + dpz^2) > 1e-5, (W0*(1-3*eps4))^2 * (1 + (4*eps4/(1-3*eps4)) * (dpx^4 + dpy^4 + dpz^4)/(dpx^2 + dpy^2 + dpz^2)^2)^2, W0^2)'
     #function = '(W0*(1-3*eps4))^2 * (1 + (4*eps4/(1-3*eps4)) * (dpx^4 + dpy^4 + dpz^4)/(dpx^2 + dpy^2 + dpz^2)^2)^2'
     derivative_order = 2
     #outputs = exodus
@@ -219,7 +219,7 @@
     f_name = tau_aniso
     material_property_names = 'tau0 eps4'
     args = 'dpx dpy dpz'
-    function = 'if(sqrt(dpx^2 + dpy^2) > 1e-5, tau0 * (1-3*eps4)^2 * (1 + (4*eps4/(1-3*eps4)) * (dpx^4 + dpy^4 + dpz^4)/(dpx^2 + dpy^2 + dpz^2)^2)^2, tau0)'
+    function = 'if(sqrt(dpx^2 + dpy^2 + dpz^2) > 1e-5, tau0 * (1-3*eps4)^2 * (1 + (4*eps4/(1-3*eps4)) * (dpx^4 + dpy^4 + dpz^4)/(dpx^2 + dpy^2 + dpz^2)^2)^2, tau0)'
     #function = 'tau0 * (1-3*eps4)^2 * (1 + (4*eps4/(1-3*eps4)) * (dpx^4 + dpy^4 + dpz^4)/(dpx^2 + dpy^2 + dpz^2)^2)^2'
     derivative_order = 2
     #outputs = exodus

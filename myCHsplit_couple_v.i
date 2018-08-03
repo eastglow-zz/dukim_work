@@ -107,7 +107,7 @@
     x1 = 4
     y1 = 2
     radius = 1.0
-    int_width = 0.32   #6-element size
+    int_width = 0.32   #4-element size
     invalue = 1.0
     outvalue = 0.0
   [../]
