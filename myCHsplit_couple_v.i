@@ -147,22 +147,6 @@
     execute_on = LINEAR
   [../]
 
-  [./calc_Fs_x]
-    type = ParsedAux
-    variable = Fs_x
-    args = 'c gradw_x time'
-    function = 'if((c-0.01)*(0.99-c) < 0, 0, if(time < 0, 0 , -c*gradw_x))'
-    execute_on = LINEAR
-  [../]
-
-  [./calc_Fs_y]
-    type = ParsedAux
-    variable = Fs_y
-    args = 'c gradw_y time'
-    function = 'if((c-0.01)*(0.99-c) < 0, 0, if(time < 0, 0 , -c*gradw_y))'
-    execute_on = LINEAR
-  [../]
-
   [./calc_gradc_x]
     type = VariableGradientComponent
     variable = gradc_x
@@ -178,6 +162,27 @@
     component = y
     execute_on = LINEAR
   [../]
+
+  [./calc_Fs_x]
+    type = ParsedAux
+    variable = Fs_x
+    # args = 'c gradw_x time'
+    # function = 'if((c-0.01)*(0.99-c) < 0, 0, if(time < 0, 0 , -c*gradw_x))'
+    args = 'w gradc_x time'
+    function = 'if(time < 0 , 0 , 0.001 * w * gradc_x)'
+    execute_on = LINEAR
+  [../]
+
+  [./calc_Fs_y]
+    type = ParsedAux
+    variable = Fs_y
+    # args = 'c gradw_y time'
+    # function = 'if((c-0.01)*(0.99-c) < 0, 0, if(time < 0, 0 , -c*gradw_y))'
+    args = 'w gradc_y time'
+    function = 'if(time < 0 , 0 , 0.001 * w * gradc_y)'
+    execute_on = LINEAR
+  [../]
+
 []
 
 [Kernels]
@@ -246,14 +251,12 @@
     type = CoupledForce
     variable = v_x
     v = Fs_x  #provided by ParsedAux kernel
-    coef = 1
   [../]
 
   [./Interfacial_force_y]
     type = CoupledForce
     variable = v_y
     v = Fs_y  #provided by ParsedAux kernel
-    coef = 1
   [../]
   #[./Body_force_test_x]
   #  type = BodyForce
@@ -357,7 +360,8 @@
     type = GenericConstantMaterial
     prop_names  = 'M_c0 kappa_c'
     #prop_values = '0.1  1.7486e-2'
-    prop_values = '200  3.49725e-5'
+    #prop_values = '200  3.49725e-5'
+    prop_values = '100  0.0065'
   [../]
   [./Mobility]
     type = ParsedMaterial
@@ -373,7 +377,8 @@
     args = 'c'
     constant_names = 'dbe'
     #constant_expressions = '5.2639'
-    constant_expressions = '2.63196e-3'
+    #constant_expressions = '2.63196e-3'
+    constant_expressions = '1.1042'
     function = 'dbe*(c)^2*(1-c)^2'
     enable_jit = true
     #outputs = exodus
@@ -443,24 +448,28 @@
   solve_type = PJFNK
   scheme = bdf2
 
-  petsc_options_iname = '-pc_type -sub_pc_type'
-  petsc_options_value = 'asm      lu          '
+  #petsc_options_iname = '-pc_type -sub_pc_type'
+  #petsc_options_value = 'asm      lu          '
   #petsc_options_iname = '-pc_type -pc_asm_overlap'
   #petsc_options_value = 'asm      1'
 
   #petsc_options_iname = '-pc_type -sub_pc_type -sub_pc_factor_levels'
   #petsc_options_value = 'bjacobi  ilu          4'
 
+  petsc_options_iname = '-pc_type -pc_factor_mat_solver_package'
+  petsc_options_value = 'lu superlu_dist'
+
   l_max_its = 50
   l_tol = 1e-5
-  nl_max_its = 10
-  nl_rel_tol = 1e-08
+  nl_max_its = 20
+  nl_rel_tol = 1e-8
   #nl_abs_tol = 1e-8
 
+  start_time = -0.01
   dt = 0.1
   [./TimeStepper]
     type = IterationAdaptiveDT
-    dt = 0.1
+    dt = 1e-5
     cutback_factor = 0.5
     growth_factor = 2.0
     optimal_iterations = 20
